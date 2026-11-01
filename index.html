@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow & Blood: Crossover Sandbox</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        .gothic-bg {
+            background: linear-gradient(135deg, #0f0c1b 0%, #05050a 100%);
+        }
+    </style>
+</head>
+<body class="gothic-bg text-gray-200 min-h-screen flex flex-col font-sans selection:bg-red-800 selection:text-white">
+
+    <!-- Top Bar: Character Status & Anger Meter -->
+    <header class="bg-[#131124] border-b border-red-950/40 p-4 sticky top-0 z-10 shadow-lg">
+        <div class="max-w-md mx-auto flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs bg-red-950 text-red-400 px-2 py-0.5 rounded border border-red-900/50 uppercase tracking-widest font-bold">Assassin AU</span>
+                    <h1 class="text-sm font-semibold tracking-wide text-gray-100">Ren &amp; Alistair</h1>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-red-500 font-mono uppercase tracking-wider">Alistair's Rage</span>
+                </div>
+            </div>
+            
+            <!-- Visual Anger Meter Bar -->
+            <div class="w-full bg-gray-950 h-3 rounded-full overflow-hidden border border-red-950/50 relative shadow-inner">
+                <div id="anger-bar" class="bg-gradient-to-r from-red-800 via-red-600 to-red-500 h-full w-[40%] transition-all duration-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-gray-500 font-mono">
+                <span>0% ANNOYED</span>
+                <span id="anger-text">40% FURIOUS</span>
+                <span>100% ENRAGED</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Body: Scrollable Message Feed -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 overflow-y-auto space-y-4 pb-32">
+        <div id="chat-feed" class="space-y-4">
+            
+            <!-- Narrator Context Bubble -->
+            <div class="flex justify-center my-2">
+                <p class="text-xs text-center text-red-400/70 italic bg-red-950/20 px-3 py-1.5 rounded-lg border border-red-950/30 max-w-[90%]">
+                    *The heavy iron doors slam shut. Ren twirls her dagger lazily, leaning against a stone pillar. Lord Alistair glares from his throne, fangs bared.*
+                </p>
+            </div>
+
+            <!-- Alistair Message -->
+            <div class="flex flex-col items-start max-w-[85%]">
+                <span class="text-[11px] text-red-400 font-bold ml-2 mb-0.5 tracking-wide">🩸 Lord Alistair</span>
+                <div class="bg-gradient-to-br from-[#1a162b] to-[#120f20] border border-red-950/60 rounded-2xl rounded-tl-none p-3.5 shadow-md">
+                    <p class="text-sm leading-relaxed text-gray-300">
+                        *He sneers down from his dais, swirling a crystal glass filled with a crimson liquid.* "More human filth trespassing in my halls. Speak quickly, pests, before I decide to make you my evening meal."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Ren Message -->
+            <div class="flex flex-col items-end max-w-[85%] ml-auto">
+                <span class="text-[11px] text-purple-400 font-bold mr-2 mb-0.5 tracking-wide">⚔️ Ren</span>
+                <div class="bg-[#1c1936] border border-purple-900/30 rounded-2xl rounded-tr-none p-3.5 shadow-md">
+                    <p class="text-sm leading-relaxed text-gray-300">
+                        *She catches her butterfly knife mid-air with a soft click, flashing a bright, mocking smile.* "Oh, look. The local blood-sucker thinks he's scary. Calm down, your highness, your ego is showing."
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Bottom Bar: Control Panel -->
+    <footer class="bg-[#0b0914] border-t border-red-950/30 p-4 fixed bottom-0 left-0 right-0 z-10 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
+        <div class="max-w-md mx-auto space-y-3">
+            
+            <!-- Quick Mood Selection Buttons -->
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="setMood('Kind')" class="mood-btn border border-gray-800 hover:border-emerald-900 bg-gray-950/40 py-1.5 rounded-lg text-xs font-medium tracking-wide text-gray-400 hover:text-emerald-400 transition-all cursor-pointer">
+                    [😇 Kind]
+                </button>
+                <button onclick="setMood('Sassy')" class="mood-btn border border-gray-800 hover:border-purple-900 bg-gray-950/40 py-1.5 rounded-lg text-xs font-medium tracking-wide text-gray-400 hover:text-purple-400 transition-all cursor-pointer">
+                    [😏 Sassy]
+                </button>
+                <button onclick="setMood('Mocking')" class="mood-btn border-2 border-red-900 bg-red-950/20 py-1.5 rounded-lg text-xs font-bold tracking-wide text-red-400 shadow-[0_0_8px_rgba(153,27,27,0.3)] transition-all cursor-pointer">
+                    [🔥 Mocking]
+                </button>
+            </div>
+
+            <!-- Input Bar & Emergency Interruption -->
+            <div class="flex gap-2">
+                <input id="user-input" type="text" placeholder="Type a custom insult for Ren to say..." class="flex-1 bg-gray-950/80 border border-red-950/60 rounded-xl px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-red-800 transition-all placeholder:text-gray-600">
+                <button onclick="sendMessage()" class="bg-red-900 hover:bg-red-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-all shadow-md shadow-red-950/50 cursor-pointer">
+                    Send
+                </button>
+            </div>
+            
+            <button onclick="triggerEmergency()" class="w-full bg-gradient-to-r from-amber-900 to-amber-950 border border-amber-700/40 hover:from-amber-850 hover:to-amber-900 text-amber-300 font-black py-2 rounded-xl text-xs uppercase tracking-widest transition-all shadow-md cursor-pointer">
+                🚨 EMERGENCY: Summon Reinforcements
+            </button>
+        </div>
+    </footer>
+
+    <!-- Interactive Front-end Game Script -->
+    <script>
+        let currentMood = 'Mocking';
+        let angerLevel = 40;
+
+        function setMood(mood) {
+            currentMood = mood;
+            // Visual feedback loop for mood buttons
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('border-2', 'border-red-900', 'bg-red-950/20', 'text-red-400', 'font-bold', 'border-emerald-900', 'border-purple-900');
+                btn.classList.add('border-gray-800', 'text-gray-400', 'font-medium');
+            });
+            event.target.classList.add('border-2', 'border-red-900', 'bg-red-950/20', 'text-red-400', 'font-bold');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const feed = document.getElementById('chat-feed');
+            if (!input.value.trim()) return;
+
+            // 1. Add User Choice Bubble
+            feed.innerHTML += `
+                <div class="flex flex-col items-end max-w-[85%] ml-auto my-2">
+                    <span class="text-[10px] text-gray-500 font-mono mr-2">[Style: ${currentMood}]</span>
+                    <div class="bg-red-950/40 border border-red-900/40 rounded-xl p-3 text-sm text-red-200">
+                        ${input.value}
+                    </div>
+                </div>
+            `;
+
+            // 2. Adjust Anger Level Mechanics
+            if (currentMood === 'Mocking') {
+                angerLevel = Math.min(100, angerLevel + 20);
+            } else if (currentMood === 'Kind') {
+                angerLevel = Math.max(0, angerLevel - 15);
+            }
+            
+            document.getElementById('anger-bar').style.width = angerLevel + '%';
+            document.getElementById('anger-text').innerText = angerLevel + '% ' + (angerLevel >= 80 ? 'ENRAGED' : angerLevel >= 50 ? 'FURIOUS' : 'ANNOYED');
+
+            // 3. Simulate Fast Character Script Back-and-Forth
+            setTimeout(() => {
+                feed.innerHTML += `
+                    <div class="flex flex-col items-end max-w-[85%] ml-auto">
+                        <span class="text-[11px] text-purple-400 font-bold mr-2 mb-0.5 tracking-wide">⚔️ Ren</span>
+                        <div class="bg-[#1c1936] border border-purple-900/30 rounded-2xl rounded-tr-none p-3.5 shadow-md">
+                            <p class="text-sm text-gray-300"><em>*Smirks broadly, crossing her arms.*</em> "Did you hear that, blood-bag? Even they think your threats are prehistoric."</p>
+                        </div>
+                    </div>
+                `;
+                feed.scrollTop = feed.scrollHeight;
+            }, 600);
+
+            setTimeout(() => {
+                let responseText = angerLevel >= 80 
+                    ? `<em>*Slamming his fist into the stone pillar, cracking it cleanly down the middle.*</em> "ENOUGH! I will paint these walls with your human blood, you absolute insect!"` 
+                    : `<em>*Baring his sharp fangs, his eyes glowing a deep crimson.*</em> "Watch your tongue, human pest. You're testing my patience, and it's wearing thin."`;
+                
+                feed.innerHTML += `
+                    <div class="flex flex-col items-start max-w-[85%]">
+                        <span class="text-[11px] text-red-400 font-bold ml-2 mb-0.5 tracking-wide">🩸 Lord Alistair</span>
+                        <div class="bg-gradient-to-br from-[#1a162b] to-[#120f20] border border-red-950/60 rounded-2xl rounded-tl-none p-3.5 shadow-md">
